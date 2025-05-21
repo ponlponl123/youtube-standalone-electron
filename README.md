@@ -1,13 +1,13 @@
 # [WIP] Youtube Standalone `(React + TypeScript + Vite)`
 
-A lightweight youtube client and connect your activity with Discord Rish Presense! `and more plugins from community! (soon)`
+A lightweight youtube client and connect your activity with Discord Rich Presense! `and more plugins from community! (soon)`
 
 ## Roadmap
 - [ ] Multi-Tabs
 - [ ] Reload, Back, Next, Zoom, Home Button
 - [ ] Setting page
 - [ ] Clone User Authorization from browser (User Manual)
-- [ ] Discord Rish Presense
+- [ ] Discord Rich Presense
 - [ ] Equalizer
 
 ### Dark Theme
