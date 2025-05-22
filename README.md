@@ -3,8 +3,9 @@
 A lightweight youtube client and connect your activity with Discord Rish Presense! `and more plugins from community! (soon)`
 
 ## Roadmap
-- [ ] Multi-Tabs
-- [ ] Reload, Back, Next, Zoom, Home Button
+- [ ] Multi-Window
+- [x] Reload, Back, Next, Zoom, Home Button
+- [x] Pinned pane
 - [ ] Setting page
 - [ ] Clone User Authorization from browser (User Manual)
 - [ ] Discord Rish Presense

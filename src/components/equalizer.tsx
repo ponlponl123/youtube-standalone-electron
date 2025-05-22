@@ -2,7 +2,6 @@ import { Button, Link } from "@heroui/react"
 import { GitFork, GitPullRequest } from "@phosphor-icons/react"
 
 function Equalizer() {
-
     return (
         <div className="p-2 text-center max-w-48">
             <h1 className="font-bold">❤️</h1>

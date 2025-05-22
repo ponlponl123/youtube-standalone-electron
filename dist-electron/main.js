@@ -1,6 +1,11 @@
-import { app, BrowserWindow, shell } from "electron";
+import { BrowserWindow, app, ipcMain, nativeTheme, shell } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+function handleSetTitle(event, title) {
+  const webContents = event.sender;
+  const win2 = BrowserWindow.fromWebContents(webContents);
+  if (win2) win2.setTitle(title);
+}
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
@@ -14,6 +19,8 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
       devTools: process.env.NODE_ENV !== "production",
+      nodeIntegration: false,
+      contextIsolation: true,
       webSecurity: true,
       webviewTag: true
     },
@@ -24,11 +31,23 @@ function createWindow() {
   win.webContents.on("did-finish-load", () => {
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
   });
-  const config = {
-    fileProtocol: "file://"
-  };
+  win.webContents.on("blur", () => {
+    win == null ? void 0 : win.webContents.send("blur", (/* @__PURE__ */ new Date()).toLocaleString());
+  });
+  win.webContents.on("focus", () => {
+    win == null ? void 0 : win.webContents.send("focus", (/* @__PURE__ */ new Date()).toLocaleString());
+  });
+  win.on("maximize", () => {
+    win == null ? void 0 : win.webContents.send("maximize", true);
+  });
+  win.on("unmaximize", () => {
+    win == null ? void 0 : win.webContents.send("maximize", false);
+  });
+  nativeTheme.on("updated", () => {
+    win == null ? void 0 : win.webContents.send("theme", nativeTheme.shouldUseDarkColors);
+  });
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith(config.fileProtocol)) {
+    if (url.startsWith("file://")) {
       return { action: "allow" };
     }
     shell.openExternal(url);
@@ -45,6 +64,40 @@ app.on("window-all-closed", () => {
     app.quit();
     win = null;
   }
+});
+app.whenReady().then(() => {
+  ipcMain.on("set-title", handleSetTitle);
+  ipcMain.on("maximize", (_, value) => {
+    if (value)
+      win == null ? void 0 : win.maximize();
+    else
+      win == null ? void 0 : win.unmaximize();
+  });
+  ipcMain.on("minimize", () => {
+    win == null ? void 0 : win.minimize();
+  });
+  ipcMain.on("exit", () => {
+    app.quit();
+  });
+  ipcMain.on("close", () => {
+    win == null ? void 0 : win.close();
+  });
+  ipcMain.on("reload", () => {
+    win == null ? void 0 : win.reload();
+  });
+  ipcMain.handle("isMaximized", () => {
+    return win == null ? void 0 : win.isMaximized();
+  });
+  ipcMain.handle("system:theme", () => {
+    return nativeTheme.shouldUseDarkColors;
+  });
+});
+app.on("before-quit", () => {
+  ipcMain.removeHandler("isMaximized");
+  ipcMain.removeAllListeners("maximize");
+  ipcMain.removeAllListeners("minimize");
+  ipcMain.removeAllListeners("close");
+  ipcMain.removeAllListeners("reload");
 });
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {

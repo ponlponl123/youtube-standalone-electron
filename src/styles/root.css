@@ -108,3 +108,7 @@
     display: flex;
     padding: 3px;
 }
+
+html:not([focus="true"]) #root-title > * {
+    opacity: 0.4;
+}
