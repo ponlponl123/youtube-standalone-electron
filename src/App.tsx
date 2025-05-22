@@ -7,18 +7,19 @@ import Setup from './pages/setup';
 function App() {
   const { route } = useRoute();
 
+  let PageComponent;
   if (
     route === '/' ||
     route === '/setting' ||
     route.startsWith('/setting/')
   )
-    return IndexPage();
-  
+    PageComponent = IndexPage;
   else if (route === '/setup')
-    return Setup();
-
+    PageComponent = Setup;
   else
-    return NotFoundPage();
+    PageComponent = NotFoundPage;
+
+  return <PageComponent />;
 }
 
 export default App

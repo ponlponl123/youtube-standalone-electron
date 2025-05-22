@@ -8,7 +8,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
     <div className='workspace-container absolute top-[2.4rem] left-0 w-full h-[calc(100%_-_2.4rem)] flex bg-(--root-title-background)'>
         <Sidebar />
         <div className="workspace relative flex-1 flex flex-col">
-            <div className="workspace-header">
+            <div className="workspace-header z-40">
                 <Toolbar />
             </div>
             <div className="workspace-content relative flex-1 overflow-auto m-2 rounded-lg bg-(--background)">
