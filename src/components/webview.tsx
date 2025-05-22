@@ -33,6 +33,8 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
         try {
             const isAudible = webview.isCurrentlyAudible();
             const isMuted = webview.isAudioMuted();
+
+            console.log("Checking audio state:", isAudible, isMuted);
             
             if (tabData.audible !== isAudible || tabData.muted !== isMuted) {
                 editTab(params.partition, {
@@ -70,7 +72,8 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
         if (!webview) return;
 
         let intervalId: NodeJS.Timeout | null = null;
-        let isMounted = true;        const domReadyHandler = () => {
+        let isMounted = true;
+        const domReadyHandler = () => {
             handleDomReady();
             if (intervalId) clearInterval(intervalId);
             intervalId = setInterval(() => {

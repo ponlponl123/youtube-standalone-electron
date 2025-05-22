@@ -91,7 +91,7 @@ function Toolbar() {
                         {
                             const url = String(data?.address);
                             const tab = tabs.find((tab) => tab.isActive);
-                            if (tab) {
+                            if (tab && tab.url !== url) {
                                 setAddressBarValue(url);
                                 editTab(tab.id, {
                                     ...tab,

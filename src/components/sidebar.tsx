@@ -10,7 +10,7 @@ function Sidebar() {
     return (
         <div
             data-pinned={lock}
-            className='sidebar-container w-8 group/container rounded-lg ml-2 mb-2 py-1 transition-all duration-300 flex flex-col gap-1'>
+            className='sidebar-container w-8 group/container rounded-lg ml-2 mb-2 py-1 transition-all duration-300 flex flex-col gap-1 z-50'>
             <ScrollShadow className='sidebar-tabs overflow-y-auto min-h-0 flex-1 w-full' style={{
                 scrollbarColor: 'var(--scrollbar-color) transparent',
             }}>
@@ -21,10 +21,8 @@ function Sidebar() {
                                 return (
                                 <div className='tab-item-container-wrapper flex-1 flex max-h-8 overflow-hidden' key={'tab-item-'+index}>
                                     <motion.div layoutId={tab.id} initial={{ opacity: 0, marginTop: -32 }} animate={{ opacity: 1, marginTop: 0 }} exit={{ opacity: 0, marginTop: -32 }} className='tab-item-container flex-1 flex max-h-8'>
-                                        <Button className={'tab-item max-h-8 '+(tab.isActive?' active':'')} onPress={() => {
-                                            setActiveTab(tab.id);
-                                        }}>
-                                            <div className='tab-icon relative'>
+                                        <div className='tab-item-wrapper active:scale-[0.98] active:duration-50 transition-all duration-300 flex-1 flex items-center max-h-8 relative'>
+                                            <div className='tab-icon absolute left-2 z-10'>
                                                 {
                                                     tab.audible ?
                                                     <motion.div
@@ -49,14 +47,18 @@ function Sidebar() {
                                                             <SpeakerSimpleX size={12} className='w-max' />
                                                         }</Button>
                                                     </motion.div>
-                                                    : <img src={tab.icon} alt={tab.name} />
+                                                    : <img src={tab.icon} alt={tab.name} className='h-4 pointer-events-none' />
                                                 }
                                             </div>
-                                            <ScrollShadow className='tab-title w-[calc(100%_-_4rem)] text-start overflow-hidden' orientation='horizontal'>
-                                                <span className=''>{tab.name}</span>
-                                            </ScrollShadow>
-                                            <Button variant='light' size='sm' radius='lg' isIconOnly onPress={() => removeTab(tab.id)} className='remove-tab-button'><X weight='bold' size={12} /></Button>
-                                        </Button>
+                                            <Button className={'tab-item min-w-8 max-h-8 !scale-100 '+(tab.isActive?' active':'')} onPress={() => {
+                                                setActiveTab(tab.id);
+                                            }}>
+                                                <ScrollShadow className='tab-title w-[calc(100%_-_4rem)] text-start overflow-hidden' orientation='horizontal'>
+                                                    <span className=''>{tab.name}</span>
+                                                </ScrollShadow>
+                                            </Button>
+                                            <Button variant='light' size='sm' radius='lg' isIconOnly onPress={() => removeTab(tab.id)} className='remove-tab-button absolute right-1 h-6 w-6 min-w-0 p-1'><X weight='bold' size={12} /></Button>
+                                        </div>
                                     </motion.div>
                                 </div>
                                 )
