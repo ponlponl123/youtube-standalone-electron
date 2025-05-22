@@ -1,85 +1,106 @@
-import { useRef, useEffect, WebViewHTMLAttributes } from 'react'
+import React, { useRef, useEffect, WebViewHTMLAttributes } from 'react'
 import { useTabs } from '../contexts/tabsContext';
 
-function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
-    const { setTabWebview, editTab, tabs } = useTabs();
-    const tabData = tabs.find((tab) => tab.id === params.partition);
-
+function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const { setTabWebview, editTab, getTab } = useTabs();
+    const tabData = React.useMemo(() => params.partition ? getTab(params.partition) : undefined, [getTab, params.partition]);
+    const isReady = useRef(false);
     const localWebviewRef = useRef<Electron.WebviewTag>(null);
-
+    const setupComplete = useRef(false);
+    
+    // Handle webview reference setup once
     useEffect(() => {
-        if (params.partition && localWebviewRef.current) {
+        if (!params.partition || setupComplete.current) return;
+        
+        const webview = localWebviewRef.current;
+        if (!webview) return;
+
+        // Don't set if reference is already correct
+        if (tabData?.webview?.current !== webview) {
+            setupComplete.current = true;
             setTabWebview(params.partition, localWebviewRef);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [params.partition]);
+
+        return () => {
+            setupComplete.current = false;
+        };
+    }, [params.partition, setTabWebview, tabData?.webview]);const handleDomReady = React.useCallback(() => {
+        console.log("Webview is ready");
+        isReady.current = true;
+    }, []);
+
+    const checkAudioState = React.useCallback((webview: Electron.WebviewTag) => {
+        if (!isReady.current || !params.partition || !tabData) return;
+        try {
+            const isAudible = webview.isCurrentlyAudible();
+            const isMuted = webview.isAudioMuted();
+            
+            if (tabData.audible !== isAudible || tabData.muted !== isMuted) {
+                editTab(params.partition, {
+                    ...tabData,
+                    id: tabData.id,  // Ensure id is included
+                    audible: isAudible,
+                    muted: isMuted
+                });
+            }
+        } catch (e) {
+            console.debug('Ignoring webview state check error:', e);
+        }
+    }, [editTab, params.partition, tabData]);
+
+    const handleNavigation = React.useCallback((webview: Electron.WebviewTag) => {
+        if (!isReady.current || !params.partition || !tabData) return;
+        try {
+            const url = webview.getURL();
+            const title = webview.getTitle();
+            if (tabData.url !== url || tabData.name !== title) {
+                editTab(params.partition, {
+                    ...tabData,
+                    id: tabData.id,  // Ensure id is included
+                    url,
+                    name: title || tabData.name
+                });
+            }
+        } catch (e) {
+            console.debug('Error updating tab data:', e);
+        }
+    }, [editTab, params.partition, tabData]);
 
     useEffect(() => {
         const webview = localWebviewRef.current;
-        if (!webview || !tabData) return;
+        if (!webview) return;
 
         let intervalId: NodeJS.Timeout | null = null;
-
-        const handleDomReady = () => {
-            console.log("Webview is ready");
-
+        let isMounted = true;        const domReadyHandler = () => {
+            handleDomReady();
             if (intervalId) clearInterval(intervalId);
             intervalId = setInterval(() => {
-                // Always get the latest tabData and params.partition
-                const currentTabData = tabs.find((tab) => tab.id === params.partition);
-                console.log("isCurrentlyAudible", webview.isCurrentlyAudible())
-                console.log("isAudioMuted", webview.isAudioMuted())
-                if (params.partition && currentTabData) {
-                    try {
-                        if (webview.isCurrentlyAudible())
-                            editTab(params.partition, {
-                                ...currentTabData,
-                                audible: true
-                            });
-                        else
-                            editTab(params.partition, {
-                                ...currentTabData,
-                                audible: false
-                            });
-
-                        if (webview.isAudioMuted())
-                            editTab(params.partition, {
-                                ...currentTabData,
-                                muted: true
-                            });
-                        else
-                            editTab(params.partition, {
-                                ...currentTabData,
-                                muted: false
-                            });
-                    } catch (e) {
-                        // Ignore errors if webview is not ready
-                    }
-                }
+                if (!isMounted) return;
+                if (webview) checkAudioState(webview);
             }, 1000);
         };
 
-        const handleDidNavigate = () => {
-            if (params.partition && tabData) {
-                editTab(params.partition, {
-                    ...tabData,
-                    url: webview.getURL(),
-                    name: webview.getTitle() || tabData.name || ''
-                });
-            }
-        };
+        const navigationHandler = () => handleNavigation(webview);
 
-        webview.addEventListener('dom-ready', handleDomReady);
-        webview.addEventListener('did-navigate', handleDidNavigate);
-        webview.addEventListener('page-title-updated', handleDidNavigate);
-
-        return () => {
-            webview.removeEventListener('dom-ready', handleDomReady);
-            webview.removeEventListener('did-navigate', handleDidNavigate);
-            webview.removeEventListener('page-title-updated', handleDidNavigate);
-            if (intervalId) clearInterval(intervalId);
+        try {
+            webview.addEventListener('dom-ready', domReadyHandler);
+            webview.addEventListener('did-navigate', navigationHandler);
+            webview.addEventListener('page-title-updated', navigationHandler);
+            
+            return () => {
+                isMounted = false;
+                if (intervalId) clearInterval(intervalId);
+                webview.removeEventListener('dom-ready', domReadyHandler);
+                webview.removeEventListener('did-navigate', navigationHandler);
+                webview.removeEventListener('page-title-updated', navigationHandler);
+            };
+        } catch (e) {
+            console.debug('Error setting up webview listeners:', e);
+            return () => {
+                isMounted = false;
+                if (intervalId) clearInterval(intervalId);
+            };
         }
-    }, [editTab, params.partition, tabData, tabs]);
+    }, [handleDomReady, checkAudioState, handleNavigation]);
 
     return (
         <webview
