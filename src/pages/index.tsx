@@ -2,6 +2,7 @@ import Workspace from '../components/workspace'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTabs } from '../contexts/tabsContext'
 import { useRoute } from '../contexts/routeContext';
+import WebView from '../components/webview';
 import SettingPage from './setting';
 
 function IndexPage() {
@@ -13,33 +14,33 @@ function IndexPage() {
             {
                 tabs.map((tab, index) => {
                     return (
-                        <div key={index}
+                        <div key={'browser-tab-container-'+index}
                             className={'absolute w-full h-full top-0 left-0 flex items-center justify-center '+(tab.isActive?'':' pointer-events-none')}>
-                            <webview
+                            <WebView
                                 className={'w-full h-full '+(tab.isActive?'':' hidden')}
                                 src={tab.url}
                                 title={tab.name}
                                 allowFullScreen
                                 partition={tab.id}
                                 nodeintegration={false}
-                            ></webview>
+                            />
                         </div>
                     )
                 })
             }
             </Workspace>
-            <AnimatePresence>
+            <AnimatePresence key={"setting-panel-container"}>
             {
-                route === '/setting' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.16 }}
-                        className='absolute top-[2.4rem] left-0 w-full h-[calc(100%_-_2.4rem)] flex items-center justify-center z-50 bg-(--root-title-background)/40 backdrop-blur-sm p-2'
+                route.startsWith('/setting') && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.14 }}
+                        className='absolute top-[2.4rem] left-0 w-full h-[calc(100%_-_2.4rem)] flex items-center justify-center z-50 bg-(--root-title-background)/40 backdrop-blur-lg backdrop-saturate-150 p-2'
                         layoutId='setting-page' key='setting-page'>
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            initial={{ opacity: 0, scale: 0.92 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.16 }}
-                            className='w-full h-full flex items-center justify-center bg-(--background) rounded-lg'>
+                            exit={{ opacity: 0, scale: 0.92 }}
+                            transition={{ duration: 0.14 }}
+                            className='w-full h-full flex items-center justify-center bg-(--background)/90 rounded-lg'>
                             <SettingPage />
                         </motion.div>
                     </motion.div>

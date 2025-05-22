@@ -7,25 +7,63 @@
     @apply blur-md;
 }
 
-.sidebar-container:not(:hover) .sidebar-tabs {
-    scrollbar-width: none;
+.sidebar-container:not(:hover),
+.sidebar-container:not([data-pinned="true"]) {
+    .tabs-container {
+        .tab-item {
+            .tab-icon {
+                @apply mr-0;
+            }
+            .tab-title {
+                @apply opacity-0;
+            }
+            .remove-tab-button {
+                @apply opacity-0;
+            }
+        
+        }
+    }
+    .sidebar-tabs {
+        scrollbar-width: none;
+    }
 }
 
-.sidebar-container:hover .sidebar-tabs {
-    scrollbar-width: thin;
+.sidebar-container:hover,
+.sidebar-container[data-pinned="true"] {
+    @apply w-48 bg-(--background) px-1;
+    .sidebar-tabs {
+        scrollbar-width: thin;
+    }
+    .tabs-container {
+        .tab-item {
+            .tab-icon {
+                @apply mr-2;
+            }
+            .tab-title {
+                @apply opacity-100;
+            }
+            .remove-tab-button {
+                @apply opacity-40;
+            }
+        
+        }
+    }
 }
 
 .tabs-container {
     .tab-item {
         @apply relative flex flex-1 items-center justify-between p-2 min-w-0 rounded-md cursor-pointer;
-        img, svg {
+        .tab-icon {
             @apply w-4 h-4 mr-2;
+            img, svg {
+                @apply w-4 h-4;
+            }
         }
         .tab-title {
-            @apply left-8 absolute opacity-0 group-hover/container:opacity-100 text-xs  transition-all duration-300;
+            @apply left-8 absolute text-xs transition-all duration-300;
         }
         .remove-tab-button{
-            @apply absolute right-2 top-1/2 transform -translate-y-1/2 min-w-0 min-h-0 w-6 h-6 m-0 flex items-center justify-center opacity-0 group-hover/container:opacity-40 transition-all duration-300;
+            @apply absolute right-2 top-1/2 transform -translate-y-1/2 min-w-0 min-h-0 w-6 h-6 m-0 flex items-center justify-center opacity-40 transition-all duration-300;
             svg {
                 @apply w-3 h-3 !m-0;
             }
