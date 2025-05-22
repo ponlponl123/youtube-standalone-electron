@@ -44,8 +44,7 @@ function Sidebar() {
                                                             }}
                                                             variant='light'
                                                             className='min-h-0 min-w-0 w-6 h-6 absolute flex justify-center items-center'
-                                                        >{
-                                                            tab.muted ?
+                                                        >{ tab.muted ?
                                                             <SpeakerSimpleHigh size={12} className='w-max' /> :
                                                             <SpeakerSimpleX size={12} className='w-max' />
                                                         }</Button>
@@ -75,19 +74,20 @@ function Sidebar() {
                 </div>
             </ScrollShadow>
             <div className='flex items-center h-max w-full tabs-container'>
-                <Button size='sm'
+                <Button
+                    size='sm'
                     onPress={() => setLock((value) => !value)}
                     className={'tab-item active !bg-transparent'}
                 >
-                    {
-                        lock ? <>
-                            <div className='tab-icon relative'><PushPinSlash className='min-w-4' size={32} /></div>
-                            <span className='tab-title'>Unpin pane</span>
-                        </> : <>
-                            <div className='tab-icon relative'><PushPin className='min-w-4' size={32} /></div>
-                            <span className='tab-title'>Pin pane</span>
-                        </>
-                    }
+                {
+                    lock ? <>
+                        <div className='tab-icon relative'><PushPinSlash className='min-w-4' size={32} /></div>
+                        <span className='tab-title'>Unpin pane</span>
+                    </> : <>
+                        <div className='tab-icon relative'><PushPin className='min-w-4' size={32} /></div>
+                        <span className='tab-title'>Pin pane</span>
+                    </>
+                }
                 </Button>
             </div>
         </div>

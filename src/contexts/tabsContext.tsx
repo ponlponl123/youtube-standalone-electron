@@ -114,10 +114,13 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setTabs((prevTabs) => {
             return prevTabs.map((tab) => {
                 if (tab.id === id) {
-                    tab.name = data.name;
-                    tab.url = data.url;
-                    tab.icon = data.icon;
-                    tab.updatedAt = Date.now();
+                    return {
+                        ...tab,
+                        ...data,
+                        updatedAt: Date.now(),
+                        // Preserve webview reference if not provided in data
+                        webview: data.webview || tab.webview
+                    };
                 }
                 return tab;
             });
