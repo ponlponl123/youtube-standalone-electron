@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain, nativeTheme, shell } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import os from 'os'
+
 import { handleSetTitle } from './utils/title'
 
 // import { createRequire } from 'node:module'
@@ -30,8 +32,8 @@ function createWindow() {
       webviewTag: true,
     },
     titleBarStyle: 'hidden',
-    minWidth: 600,
-    minHeight: 400,
+    minWidth: 640,
+    minHeight: 480,
   })
 
   // Test active push message to Renderer-process.
@@ -122,11 +124,20 @@ app.whenReady().then(() => {
   ipcMain.handle('system:theme', () => {
     return nativeTheme.shouldUseDarkColors
   })
+  ipcMain.handle('system:platform', () => {
+    return os.platform()
+  })
+  ipcMain.handle('system:release', () => {
+    return os.release()
+  })
   ipcMain.handle('app:fullscreen', () => {
     return win?.isFullScreen()
   })
   ipcMain.handle('app:focused', () => {
     return win?.isFocused()
+  })
+  ipcMain.handle('app:version', () => {
+    return app.getVersion()
   })
 })
 

@@ -1,7 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/langContext';
 
 function Setup() {
+    const { language } = useLanguage();
     const seed = Math.floor(Math.random() * 1000);
     const [randomSeed] = React.useState(seed);
     return (
@@ -81,8 +83,8 @@ function Setup() {
                     })()}
                 </style>
                 <div className='flex flex-col items-center justify-center gap-2 absolute top-[2.4rem] left-0 h-[calc(100%_-_2.4rem)] w-full bg-gradient-to-b to-transparent from-(--root-title-background) backdrop-blur-lg backdrop-saturate-150 p-2'>
-                    <h2 className='opacity-60'>👋 Hello there!</h2>
-                    <h1 className='text-2xl font-medium flex items-center gap-2'>Let's Setup your experience!</h1>
+                    <h2 className='opacity-60'>{language.data.setup.welcome.hello}</h2>
+                    <h1 className='text-2xl font-medium flex items-center gap-2'>{language.data.setup.welcome.title}</h1>
                 </div>
             </>
         </motion.div>

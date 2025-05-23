@@ -1,6 +1,7 @@
 import { BrowserWindow, app, ipcMain, nativeTheme, shell } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import os from "os";
 function handleSetTitle(event, title) {
   const webContents = event.sender;
   const win2 = BrowserWindow.fromWebContents(webContents);
@@ -25,8 +26,8 @@ function createWindow() {
       webviewTag: true
     },
     titleBarStyle: "hidden",
-    minWidth: 600,
-    minHeight: 400
+    minWidth: 640,
+    minHeight: 480
   });
   win.webContents.on("did-finish-load", () => {
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
@@ -103,11 +104,20 @@ app.whenReady().then(() => {
   ipcMain.handle("system:theme", () => {
     return nativeTheme.shouldUseDarkColors;
   });
+  ipcMain.handle("system:platform", () => {
+    return os.platform();
+  });
+  ipcMain.handle("system:release", () => {
+    return os.release();
+  });
   ipcMain.handle("app:fullscreen", () => {
     return win == null ? void 0 : win.isFullScreen();
   });
   ipcMain.handle("app:focused", () => {
     return win == null ? void 0 : win.isFocused();
+  });
+  ipcMain.handle("app:version", () => {
+    return app.getVersion();
   });
 });
 app.on("before-quit", () => {

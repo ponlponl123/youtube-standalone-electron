@@ -3,8 +3,10 @@ import { useTabs } from '../contexts/tabsContext'
 import { Button, ScrollShadow } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, PushPin, PushPinSlash, SpeakerSimpleHigh, SpeakerSimpleX, X } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/langContext';
 
 function Sidebar() {
+    const { language } = useLanguage();
     const [ lock, setLock ] = React.useState(false);
     const { tabs, addTab, editTab, removeTab, setActiveTab } = useTabs();
     return (
@@ -69,7 +71,7 @@ function Sidebar() {
                         className={'tab-item active !bg-transparent'}
                     >
                         <div className='tab-icon relative'><Plus className='min-w-4' size={32} /></div>
-                        <span className='tab-title'>New tab</span>
+                        <span className='tab-title'>{language.data.sidebar.actions.new_tab}</span>
                     </Button>
                 </div>
             </ScrollShadow>
@@ -82,10 +84,10 @@ function Sidebar() {
                 {
                     lock ? <>
                         <div className='tab-icon relative'><PushPinSlash className='min-w-4' size={32} /></div>
-                        <span className='tab-title'>Unpin pane</span>
+                        <span className='tab-title'>{language.data.sidebar.actions.unpin_pane}</span>
                     </> : <>
                         <div className='tab-icon relative'><PushPin className='min-w-4' size={32} /></div>
-                        <span className='tab-title'>Pin pane</span>
+                        <span className='tab-title'>{language.data.sidebar.actions.pin_pane}</span>
                     </>
                 }
                 </Button>
