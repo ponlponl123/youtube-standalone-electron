@@ -8,14 +8,7 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
     const isReady = useRef(false);
     const localWebviewRef = useRef<Electron.WebviewTag>(null);
     const setupComplete = useRef(false);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            if (params.partition)
-                editTab(params.partition, {ready: isReady.current});
-        }, 100);
-        return () => clearTimeout(timeout);
-    }, [isReady, editTab, params.partition]);
+    const webviewId = params.partition as string;
     
     // Handle webview reference setup once
     useEffect(() => {
@@ -38,7 +31,8 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
     const handleDomReady = React.useCallback(() => {
         console.log("Webview is ready");
         isReady.current = true;
-    }, []);
+        if (params.partition) editTab(params.partition, {ready: true});
+    }, [params.partition, editTab]);
 
     const checkAudioState = React.useCallback((webview: Electron.WebviewTag) => {
         if (!isReady.current || !params.partition || !tabData) return;
@@ -60,11 +54,17 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
         try {
             const url = webview.getURL();
             const title = webview.getTitle();
+            const canGoBack = webview.canGoBack();
+            const canGoForward = webview.canGoForward();
+            const zoom = webview.getZoomLevel();
             if (tabData.url !== url || tabData.name !== title) {
                 editTab(params.partition, {
                     ...tabData,
                     url,
-                    name: title || tabData.name
+                    name: title || tabData.name,
+                    canGoBack,
+                    canGoForward,
+                    zoom
                 });
             }
         } catch (e) {
@@ -73,7 +73,7 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
     }, [editTab, params.partition, tabData]);
     
     useEffect(() => {
-        if (params.partition) editTab(params.partition, {ready: false});
+        editTab(webviewId, {ready: false});
         const webview = localWebviewRef.current;
         if (!webview) return;
 
@@ -103,11 +103,15 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
         };
 
         const navigationHandler = () => handleNavigation(webview);
+        const loadstartHandler = () => editTab(webviewId, {loading: true});
+        const loadstopHandler = () => editTab(webviewId, {loading: false});
 
         try {
             webview.addEventListener('dom-ready', domReadyHandler);
             webview.addEventListener('did-navigate', navigationHandler);
             webview.addEventListener('page-title-updated', navigationHandler);
+            webview.addEventListener('did-start-loading', loadstartHandler);
+            webview.addEventListener('did-stop-loading', loadstopHandler);
         } catch (e) {
             console.debug('Error setting up webview listeners:', e);
         }
@@ -125,17 +129,23 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
                 webview.removeEventListener('dom-ready', domReadyHandler);
                 webview.removeEventListener('did-navigate', navigationHandler);
                 webview.removeEventListener('page-title-updated', navigationHandler);
+                webview.removeEventListener('did-start-loading', loadstartHandler);
+                webview.removeEventListener('did-stop-loading', loadstopHandler);
             } catch (e) {
                 console.debug('Error cleaning up webview listeners:', e);
             }
         };
-    }, []); // Remove dependencies that can cause unnecessary re-renders
+    }, [webviewId]); // Remove dependencies that can cause unnecessary re-renders
 
     useEffect(() => {
-        const webview = localWebviewRef.current;
-        if (!isReady.current || !params.partition || !tabData || !webview) return;
-        webview.setAudioMuted(tabData.muted);
-        webview.setZoomLevel(tabData.zoom);
+        try {
+            const webview = localWebviewRef.current;
+            if (!isReady.current || !params.partition || !tabData || !webview) return;
+            webview.setAudioMuted(tabData.muted);
+            webview.setZoomLevel(tabData.zoom);
+        } catch {
+            // Ignore errors
+        }
     }, [params.partition, tabData, localWebviewRef])
 
     return (

@@ -20,3 +20,6 @@ window.ipcRenderer.on('blur', () => {
 window.ipcRenderer.on('focus', () => {
   window.document.documentElement.setAttribute("focus", "true")
 })
+window.ipcRenderer.invoke('app:focused').then((value)=>{
+  window.document.documentElement.setAttribute("focus", value)
+})

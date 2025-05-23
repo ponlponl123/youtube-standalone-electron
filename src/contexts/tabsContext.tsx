@@ -6,12 +6,14 @@ export type EditTabOption = {
     icon?: string;
     updatedAt?: number;
     lastActive?: number;
-    isActive?: boolean;
     isPinned?: boolean;
     zoom?: number;
     audible?: boolean;
     muted?: boolean;
     ready?: boolean;
+    loading?: boolean;
+    canGoBack?: boolean;
+    canGoForward?: boolean;
     webview?: React.RefObject<Electron.WebviewTag> | undefined;
 }
 
@@ -81,10 +83,10 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (tabs.length === 0) window.ipcRenderer.send('close');
     }, [tabs]);
     const addTab = (url: string) => {
-        const newTab: Tab = {
+        setTabs((prevTabs) => [...prevTabs, {
             id: Date.now().toString(),
-            name: url,
-            url: url,
+            name: "Youtube",
+            url,
             icon: "/favicon_32x32.png",
             createdAt: Date.now(),
             updatedAt: Date.now(),
@@ -96,8 +98,7 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
             muted: false,
             ready: false,
             webview: undefined,
-        };
-        setTabs((prevTabs) => [...prevTabs, newTab]);
+        }]);
     }
     const removeTab = (id: string) => {
         const tabToRemove = tabs.find((tab) => tab.id === id);

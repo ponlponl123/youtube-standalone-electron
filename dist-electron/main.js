@@ -106,6 +106,9 @@ app.whenReady().then(() => {
   ipcMain.handle("app:fullscreen", () => {
     return win == null ? void 0 : win.isFullScreen();
   });
+  ipcMain.handle("app:focused", () => {
+    return win == null ? void 0 : win.isFocused();
+  });
 });
 app.on("before-quit", () => {
   ipcMain.removeHandler("isMaximized");

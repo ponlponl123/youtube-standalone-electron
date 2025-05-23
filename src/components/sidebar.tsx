@@ -35,10 +35,7 @@ function Sidebar() {
                                                             isIconOnly
                                                             size='sm'
                                                             onPress={()=>{
-                                                                editTab(tab.id, {
-                                                                    ...tab,
-                                                                    muted: !tab.muted
-                                                                })
+                                                                editTab(tab.id, {muted: !tab.muted})
                                                             }}
                                                             variant='light'
                                                             className='min-h-0 min-w-0 w-6 h-6 absolute flex justify-center items-center'

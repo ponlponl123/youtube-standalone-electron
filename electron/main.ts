@@ -125,6 +125,9 @@ app.whenReady().then(() => {
   ipcMain.handle('app:fullscreen', () => {
     return win?.isFullScreen()
   })
+  ipcMain.handle('app:focused', () => {
+    return win?.isFocused()
+  })
 })
 
 app.on('before-quit', () => {

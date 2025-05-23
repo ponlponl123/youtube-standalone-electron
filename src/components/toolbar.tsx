@@ -10,41 +10,13 @@ function Toolbar() {
     const { tabs, editTab } = useTabs();
     const activeTab = React.useMemo(() => tabs.find((tab) => tab.isActive), [tabs]);
     const webview = React.useMemo(() => activeTab?.webview?.current, [activeTab?.webview]);
-    const [isLoading, setIsLoading] = React.useState(false);
     const [addressBarFocused, setAddressBarFocused] = React.useState(false);
     const [zoomValue, setZoomValue] = React.useState<SliderValue>(100);
-    const [addressBarValue, setAddressBarValue] = React.useState('https://www.youtube.com/');
+    const [addressBarValue, setAddressBarValue] = React.useState(activeTab?.url || 'https://www.youtube.com/');
     
-    // Update loading state and navigation state when webview changes
-    React.useEffect(() => {
-        if (!webview) {
-            setIsLoading(false);
-            return;
-        }
-
-        const handleStartLoading = () => setIsLoading(true);
-        const handleStopLoading = () => {
-            setIsLoading(false);
-        }
-        
-        try {
-            webview.addEventListener('did-start-loading', handleStartLoading);
-            webview.addEventListener('did-stop-loading', handleStopLoading);
-            setIsLoading(webview.isLoading());
-        } catch (error) {
-            console.debug('Error setting up loading listeners:', error);
-        }
-        
-        return () => {
-            try {
-                webview.removeEventListener('did-start-loading', handleStartLoading);
-                webview.removeEventListener('did-stop-loading', handleStopLoading);
-            } catch (error) {
-                console.debug('Error cleaning up loading listeners:', error);
-            }
-            setIsLoading(false);
-        };
-    }, [webview]);
+    React.useMemo(()=>{
+        if ( activeTab?.url ) setAddressBarValue(activeTab?.url);
+    }, [activeTab?.url])
 
     React.useEffect(() => {
         const timeout = setTimeout(() => {
@@ -61,7 +33,7 @@ function Toolbar() {
             <div className='tool-bar-actions flex w-full justify-center items-start gap-1'>
                 <div className='toolbar-actions flex gap-1'>
                     <AnimatePresence key={"toolbar-actions-animate-presence"}>                        {
-                            activeTab?.ready && activeTab?.webview?.current?.canGoBack() &&
+                            activeTab?.ready && webview && activeTab.canGoBack &&
                             <motion.div layoutId='toolbar-actions-back-btn' key={'toolbar-actions-back-btn'}
                                 initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                
                                 <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
@@ -70,7 +42,7 @@ function Toolbar() {
                             </motion.div>
                         }
                         {
-                            activeTab?.ready && activeTab?.webview?.current?.canGoForward() &&
+                            activeTab?.ready && webview && activeTab.canGoForward &&
                             <motion.div layoutId='toolbar-actions-next-btn' key={'toolbar-actions-next-btn'}
                                 initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                
                                 <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
@@ -80,10 +52,10 @@ function Toolbar() {
                         }
                         <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
                             aria-label="Reload page"
-                            isDisabled={isLoading}
+                            isDisabled={activeTab?.loading}
                             onPress={() => webview?.reload()}>
                             {
-                                isLoading ? <Spinner color='current' size='sm' className='scale-70' /> :
+                                activeTab?.loading ? <Spinner color='current' size='sm' className='scale-70' /> :
                                 <ArrowClockwise size={14} />
                             }
                         </Button>
@@ -100,7 +72,6 @@ function Toolbar() {
                             if (tab && tab.url !== url) {
                                 setAddressBarValue(url);
                                 editTab(tab.id, {
-                                    ...tab,
                                     url: url,
                                     name: url,
                                 });
@@ -126,10 +97,8 @@ function Toolbar() {
                                 size='sm'
                                 radius='full'
                                 value={addressBarValue}
-                                onChange={(e) => {
-                                    setAddressBarValue(e.currentTarget.value);
-                                }}
                                 placeholder='https://www.youtube.com/'
+                                onChange={(e) => setAddressBarValue(e.currentTarget.value)}
                                 onFocus={() => setAddressBarFocused(true)}
                                 onBlur={() => setAddressBarFocused(false)}
                                 validate={(value)=>{
@@ -137,7 +106,7 @@ function Toolbar() {
                                 }}
                             />
                             {
-                                isLoading &&
+                                activeTab?.loading &&
                                 <Progress color='danger' className='h-[2px] w-[calc(100%_-_1.5rem)] absolute top-[30px] left-3 z-10' size='sm' isIndeterminate />
                             }
                             {
