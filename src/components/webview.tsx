@@ -8,6 +8,14 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
     const isReady = useRef(false);
     const localWebviewRef = useRef<Electron.WebviewTag>(null);
     const setupComplete = useRef(false);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (params.partition)
+                editTab(params.partition, {ready: isReady.current});
+        }, 100);
+        return () => clearTimeout(timeout);
+    }, [isReady, editTab, params.partition]);
     
     // Handle webview reference setup once
     useEffect(() => {
@@ -65,6 +73,7 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
     }, [editTab, params.partition, tabData]);
     
     useEffect(() => {
+        if (params.partition) editTab(params.partition, {ready: false});
         const webview = localWebviewRef.current;
         if (!webview) return;
 

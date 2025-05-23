@@ -11,6 +11,7 @@ export type EditTabOption = {
     zoom?: number;
     audible?: boolean;
     muted?: boolean;
+    ready?: boolean;
     webview?: React.RefObject<Electron.WebviewTag> | undefined;
 }
 
@@ -27,6 +28,7 @@ export interface Tab extends EditTabOption {
     zoom: number;
     audible: boolean;
     muted: boolean;
+    ready: boolean;
     webview?: React.RefObject<Electron.WebviewTag> | undefined;
 }
 
@@ -56,6 +58,7 @@ export const defaultTab: Tab = {
     zoom: 0,
     audible: false,
     muted: false,
+    ready: false,
     webview: undefined,
 }
 
@@ -91,6 +94,7 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
             zoom: 0,
             audible: false,
             muted: false,
+            ready: false,
             webview: undefined,
         };
         setTabs((prevTabs) => [...prevTabs, newTab]);

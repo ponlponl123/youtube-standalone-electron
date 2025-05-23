@@ -61,7 +61,7 @@ function Toolbar() {
             <div className='tool-bar-actions flex w-full justify-center items-start gap-1'>
                 <div className='toolbar-actions flex gap-1'>
                     <AnimatePresence key={"toolbar-actions-animate-presence"}>                        {
-                            activeTab?.webview?.current?.canGoBack() &&
+                            activeTab?.ready && activeTab?.webview?.current?.canGoBack() &&
                             <motion.div layoutId='toolbar-actions-back-btn' key={'toolbar-actions-back-btn'}
                                 initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                
                                 <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
@@ -70,7 +70,7 @@ function Toolbar() {
                             </motion.div>
                         }
                         {
-                            activeTab?.webview?.current?.canGoForward() &&
+                            activeTab?.ready && activeTab?.webview?.current?.canGoForward() &&
                             <motion.div layoutId='toolbar-actions-next-btn' key={'toolbar-actions-next-btn'}
                                 initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                
                                 <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
