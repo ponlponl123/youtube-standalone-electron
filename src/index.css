@@ -2,6 +2,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @import './styles/root.css';
+@import './styles/preload.css';
 
 /* latin-ext */
 @font-face {
@@ -96,8 +97,4 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
-}
-
-main.preload {
-  
 }

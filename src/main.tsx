@@ -23,3 +23,12 @@ window.ipcRenderer.on('focus', () => {
 window.ipcRenderer.invoke('app:focused').then((value)=>{
   window.document.documentElement.setAttribute("focus", value)
 })
+
+const themeManager = (value: boolean) => {
+  const theme = value ? "dark" : "light";
+  window.document.documentElement.setAttribute("data-theme", theme)
+  window.document.documentElement.classList.value = theme;
+}
+
+window.ipcRenderer.on('theme', (_, value) => themeManager(value))
+window.ipcRenderer.invoke('system:theme').then((value) => themeManager(value))
