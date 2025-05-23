@@ -29,7 +29,7 @@ function Sidebar() {
                                                         initial={{ opacity:0 }}
                                                         animate={{ opacity:1 }}
                                                         exit={{ opacity:0 }}
-                                                        className='tab-badge absolute top-0 left-0 w-full h-full z-10 flex justify-center items-center'
+                                                        className='tab-badge absolute top-0 left-2 w-full h-full z-10 flex justify-center items-center'
                                                         layoutId={'playing-'+tab.id}>
                                                         <Button
                                                             isIconOnly
@@ -43,8 +43,8 @@ function Sidebar() {
                                                             variant='light'
                                                             className='min-h-0 min-w-0 w-6 h-6 absolute flex justify-center items-center'
                                                         >{ tab.muted ?
-                                                            <SpeakerSimpleHigh size={12} className='w-max' /> :
-                                                            <SpeakerSimpleX size={12} className='w-max' />
+                                                            <SpeakerSimpleX size={16} className='w-max' /> :
+                                                            <SpeakerSimpleHigh size={16} className='w-max' />
                                                         }</Button>
                                                     </motion.div>
                                                     : <img src={tab.icon} alt={tab.name} className='h-4 pointer-events-none' />
@@ -57,7 +57,8 @@ function Sidebar() {
                                                     <span className=''>{tab.name}</span>
                                                 </ScrollShadow>
                                             </Button>
-                                            <Button variant='light' size='sm' radius='lg' isIconOnly onPress={() => removeTab(tab.id)} className='remove-tab-button absolute right-1 h-6 w-6 min-w-0 p-1'><X weight='bold' size={12} /></Button>
+                                            <Button variant='light' size='sm' radius='lg' isIconOnly onPress={() => removeTab(tab.id)}
+                                                className='remove-tab-button absolute right-1 h-6 w-6 min-w-0 p-1 hidden group-hover/container:flex'><X weight='bold' size={12} /></Button>
                                         </div>
                                     </motion.div>
                                 </div>

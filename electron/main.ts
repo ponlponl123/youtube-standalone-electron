@@ -53,6 +53,13 @@ function createWindow() {
     win?.webContents.send('maximize', false)
   })
 
+  win.on('enter-full-screen', ()=>{
+    win?.webContents.send('fullscreen', true)
+  })
+  win.on('leave-full-screen', ()=>{
+    win?.webContents.send('fullscreen', false)
+  })
+
   nativeTheme.on('updated', ()=> {
     win?.webContents.send('theme', nativeTheme.shouldUseDarkColors)
   })
@@ -103,11 +110,20 @@ app.whenReady().then(() => {
   ipcMain.on('reload', () => {
     win?.reload()
   })
+  ipcMain.on('fullscreen', (_, value: boolean) => {
+    if (value)
+      win?.setFullScreen(true)
+    else
+      win?.setFullScreen(false)
+  })
   ipcMain.handle('isMaximized', () => {
     return win?.isMaximized()
   })
   ipcMain.handle('system:theme', () => {
     return nativeTheme.shouldUseDarkColors
+  })
+  ipcMain.handle('app:fullscreen', () => {
+    return win?.isFullScreen()
   })
 })
 

@@ -1,7 +1,7 @@
-import Workspace from '../components/workspace'
-import { AnimatePresence, motion } from 'framer-motion'
 import { useTabs } from '../contexts/tabsContext'
 import { useRoute } from '../contexts/routeContext';
+import { AnimatePresence, motion } from 'framer-motion'
+import Workspace from '../components/workspace'
 import WebView from '../components/webview';
 import SettingPage from './setting';
 
@@ -18,8 +18,6 @@ function IndexPage() {
                             className={'absolute w-full h-full top-0 left-0 flex items-center justify-center '+(tab.isActive?'':' pointer-events-none')}>
                             <WebView
                                 className={'w-full h-full '+(tab.isActive?'':' hidden')}
-                                src={tab.url}
-                                title={tab.name}
                                 allowFullScreen
                                 partition={tab.id}
                                 nodeintegration={false}

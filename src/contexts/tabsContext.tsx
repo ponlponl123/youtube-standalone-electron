@@ -1,6 +1,20 @@
 import React from "react";
 
-export type Tab = {
+export type EditTabOption = {
+    name?: string;
+    url?: string;
+    icon?: string;
+    updatedAt?: number;
+    lastActive?: number;
+    isActive?: boolean;
+    isPinned?: boolean;
+    zoom?: number;
+    audible?: boolean;
+    muted?: boolean;
+    webview?: React.RefObject<Electron.WebviewTag> | undefined;
+}
+
+export interface Tab extends EditTabOption {
     id: string;
     name: string;
     url: string;
@@ -23,7 +37,7 @@ export interface TabsContextType {
     setActiveTab: (id: string) => void;
     getTab: (id: string) => Tab | undefined;
     getActiveTab: () => Tab | undefined;
-    editTab: (id: string, data: Tab) => void;
+    editTab: (id: string, data: EditTabOption) => void;
     setTabZoom: (id: string, zoom: number) => void;
     setTabs: (tabs: Tab[]) => void;
     setTabWebview: (id: string, webview: React.RefObject<Electron.WebviewTag>) => void;
@@ -110,7 +124,7 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const getActiveTab = () => {
         return tabs.find((tab) => tab.isActive);
     }
-    const editTab = (id: string, data: Tab) => {
+    const editTab = (id: string, data: EditTabOption) => {
         setTabs((prevTabs) => {
             return prevTabs.map((tab) => {
                 if (tab.id === id) {

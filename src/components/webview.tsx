@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, WebViewHTMLAttributes } from 'react'
 import { useTabs } from '../contexts/tabsContext';
 
-function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const { setTabWebview, editTab, getTab } = useTabs();
-    const tabData = React.useMemo(() => params.partition ? getTab(params.partition) : undefined, [getTab, params.partition]);
+function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {
+    const { setTabWebview, editTab, tabs } = useTabs();
+    const tabData = React.useMemo(() => params.partition ? tabs.find(tab => tab.id === params.partition) : undefined, [tabs, params.partition]);
+    const origin = useRef(tabData?.url);
     const isReady = useRef(false);
     const localWebviewRef = useRef<Electron.WebviewTag>(null);
     const setupComplete = useRef(false);
@@ -23,7 +25,9 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
         return () => {
             setupComplete.current = false;
         };
-    }, [params.partition, setTabWebview, tabData?.webview]);const handleDomReady = React.useCallback(() => {
+    }, [params.partition, setTabWebview, tabData?.webview]);
+    
+    const handleDomReady = React.useCallback(() => {
         console.log("Webview is ready");
         isReady.current = true;
     }, []);
@@ -33,17 +37,11 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
         try {
             const isAudible = webview.isCurrentlyAudible();
             const isMuted = webview.isAudioMuted();
-
-            console.log("Checking audio state:", isAudible, isMuted);
             
-            if (tabData.audible !== isAudible || tabData.muted !== isMuted) {
-                editTab(params.partition, {
-                    ...tabData,
-                    id: tabData.id,  // Ensure id is included
-                    audible: isAudible,
-                    muted: isMuted
-                });
-            }
+            editTab(params.partition, {
+                audible: isAudible,
+                muted: isMuted
+            });
         } catch (e) {
             console.debug('Ignoring webview state check error:', e);
         }
@@ -57,7 +55,6 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
             if (tabData.url !== url || tabData.name !== title) {
                 editTab(params.partition, {
                     ...tabData,
-                    id: tabData.id,  // Ensure id is included
                     url,
                     name: title || tabData.name
                 });
@@ -66,20 +63,34 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
             console.debug('Error updating tab data:', e);
         }
     }, [editTab, params.partition, tabData]);
-
+    
     useEffect(() => {
         const webview = localWebviewRef.current;
         if (!webview) return;
 
         let intervalId: NodeJS.Timeout | null = null;
         let isMounted = true;
-        const domReadyHandler = () => {
-            handleDomReady();
-            if (intervalId) clearInterval(intervalId);
+
+        // Setup audio state check interval
+        const setupAudioStateCheck = () => {
+            if (!isMounted) return;
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+            
             intervalId = setInterval(() => {
-                if (!isMounted) return;
-                if (webview) checkAudioState(webview);
+                if (!isMounted || !webview) {
+                    if (intervalId) clearInterval(intervalId);
+                    return;
+                }
+                checkAudioState(webview);
             }, 1000);
+        };
+
+        const domReadyHandler = () => {
+            if (!isMounted) return;
+            handleDomReady();
+            setupAudioStateCheck();
         };
 
         const navigationHandler = () => handleNavigation(webview);
@@ -88,22 +99,35 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
             webview.addEventListener('dom-ready', domReadyHandler);
             webview.addEventListener('did-navigate', navigationHandler);
             webview.addEventListener('page-title-updated', navigationHandler);
+        } catch (e) {
+            console.debug('Error setting up webview listeners:', e);
+        }
             
-            return () => {
-                isMounted = false;
-                if (intervalId) clearInterval(intervalId);
+        // Single cleanup function that handles both success and error cases
+        return () => {
+            if (!webview) return; // Don't cleanup if webview is not available
+            
+            isMounted = false;
+            if (intervalId) {
+                console.log("Clearing audio state check interval...");
+                clearInterval(intervalId);
+            }
+            try {
                 webview.removeEventListener('dom-ready', domReadyHandler);
                 webview.removeEventListener('did-navigate', navigationHandler);
                 webview.removeEventListener('page-title-updated', navigationHandler);
-            };
-        } catch (e) {
-            console.debug('Error setting up webview listeners:', e);
-            return () => {
-                isMounted = false;
-                if (intervalId) clearInterval(intervalId);
-            };
-        }
-    }, [handleDomReady, checkAudioState, handleNavigation]);
+            } catch (e) {
+                console.debug('Error cleaning up webview listeners:', e);
+            }
+        };
+    }, []); // Remove dependencies that can cause unnecessary re-renders
+
+    useEffect(() => {
+        const webview = localWebviewRef.current;
+        if (!isReady.current || !params.partition || !tabData || !webview) return;
+        webview.setAudioMuted(tabData.muted);
+        webview.setZoomLevel(tabData.zoom);
+    }, [params.partition, tabData, localWebviewRef])
 
     return (
         <webview
@@ -113,6 +137,7 @@ function WebView(params: WebViewHTMLAttributes<Electron.WebviewTag>) {    const 
             style={{
                 zoom: 0.6,
             }}
+            src={origin.current}
             {...params}
             // webpreferences="allowRunningInsecureContent"
             // @ts-expect-error TypeScript doesn't recognize the webview tag

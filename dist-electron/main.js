@@ -43,6 +43,12 @@ function createWindow() {
   win.on("unmaximize", () => {
     win == null ? void 0 : win.webContents.send("maximize", false);
   });
+  win.on("enter-full-screen", () => {
+    win == null ? void 0 : win.webContents.send("fullscreen", true);
+  });
+  win.on("leave-full-screen", () => {
+    win == null ? void 0 : win.webContents.send("fullscreen", false);
+  });
   nativeTheme.on("updated", () => {
     win == null ? void 0 : win.webContents.send("theme", nativeTheme.shouldUseDarkColors);
   });
@@ -85,11 +91,20 @@ app.whenReady().then(() => {
   ipcMain.on("reload", () => {
     win == null ? void 0 : win.reload();
   });
+  ipcMain.on("fullscreen", (_, value) => {
+    if (value)
+      win == null ? void 0 : win.setFullScreen(true);
+    else
+      win == null ? void 0 : win.setFullScreen(false);
+  });
   ipcMain.handle("isMaximized", () => {
     return win == null ? void 0 : win.isMaximized();
   });
   ipcMain.handle("system:theme", () => {
     return nativeTheme.shouldUseDarkColors;
+  });
+  ipcMain.handle("app:fullscreen", () => {
+    return win == null ? void 0 : win.isFullScreen();
   });
 });
 app.on("before-quit", () => {

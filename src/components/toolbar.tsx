@@ -7,23 +7,15 @@ import { defaultTab, useTabs } from '../contexts/tabsContext';
 import { isAnyYouTubeUrl } from '../utils/yt-url';
 
 function Toolbar() {
-    const { tabs, editTab, getActiveTab } = useTabs();
-    const activeTab = React.useMemo(() => getActiveTab(), [getActiveTab]);
+    const { tabs, editTab } = useTabs();
+    const activeTab = React.useMemo(() => tabs.find((tab) => tab.isActive), [tabs]);
     const webview = React.useMemo(() => activeTab?.webview?.current, [activeTab?.webview]);
     const [isLoading, setIsLoading] = React.useState(false);
     const [addressBarFocused, setAddressBarFocused] = React.useState(false);
     const [zoomValue, setZoomValue] = React.useState<SliderValue>(100);
     const [addressBarValue, setAddressBarValue] = React.useState('https://www.youtube.com/');
-
-    // Update UI state when active tab changes
-    React.useEffect(() => {
-        if (!activeTab) return;
-
-        setZoomValue((activeTab.zoom + 1) * 100);
-        setAddressBarValue(activeTab.url);
-    }, [activeTab]);
-
-    // Update loading state when webview changes
+    
+    // Update loading state and navigation state when webview changes
     React.useEffect(() => {
         if (!webview) {
             setIsLoading(false);
@@ -31,7 +23,9 @@ function Toolbar() {
         }
 
         const handleStartLoading = () => setIsLoading(true);
-        const handleStopLoading = () => setIsLoading(false);
+        const handleStopLoading = () => {
+            setIsLoading(false);
+        }
         
         try {
             webview.addEventListener('did-start-loading', handleStartLoading);
@@ -51,31 +45,43 @@ function Toolbar() {
             setIsLoading(false);
         };
     }, [webview]);
+
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            const zoom = (Number(zoomValue) / 100) - 1;
+            if (activeTab?.id && Math.abs((activeTab.zoom || 0) - zoom) > 0.001) {
+                editTab(activeTab.id, {zoom});
+            }
+        }, 100); // Debounce zoom updates by 100ms
+        return () => clearTimeout(timeout);
+    }, [activeTab, editTab, zoomValue]);
+
     return (
         <div className='toolbar-container flex-1 min-h-max flex flex-col justify-start items-start gap-1 mx-2 pt-1'>
             <div className='tool-bar-actions flex w-full justify-center items-start gap-1'>
                 <div className='toolbar-actions flex gap-1'>
-                    <AnimatePresence key={"toolbar-actions-animate-presence"}>
-                        {
+                    <AnimatePresence key={"toolbar-actions-animate-presence"}>                        {
                             activeTab?.webview?.current?.canGoBack() &&
                             <motion.div layoutId='toolbar-actions-back-btn' key={'toolbar-actions-back-btn'}
-                                initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
+                                initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                
+                                <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
                                     aria-label="Go back"
-                                    onPress={() => activeTab?.webview?.current?.goBack()}><CaretLeft size={14} /></Button>
+                                    onPress={() => webview?.goBack()}><CaretLeft size={14} /></Button>
                             </motion.div>
                         }
                         {
                             activeTab?.webview?.current?.canGoForward() &&
                             <motion.div layoutId='toolbar-actions-next-btn' key={'toolbar-actions-next-btn'}
-                                initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
+                                initial={{ opacity: 0, marginLeft: -36, x: 64 }} animate={{ opacity: 1, marginLeft: 0, x: 0 }} exit={{ opacity: 0, marginLeft: -36 }}>                                
+                                <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
                                     aria-label="Go forward"
-                                    onPress={() => activeTab?.webview?.current?.goForward()}><CaretRight size={14} /></Button>
+                                    onPress={() => webview?.goForward()}><CaretRight size={14} /></Button>
                             </motion.div>
                         }
                         <Button className='min-h-0 min-w-0' variant='light' radius='full' size='sm' isIconOnly
                             aria-label="Reload page"
                             isDisabled={isLoading}
-                            onPress={() => activeTab?.webview?.current?.reload()}>
+                            onPress={() => webview?.reload()}>
                             {
                                 isLoading ? <Spinner color='current' size='sm' className='scale-70' /> :
                                 <ArrowClockwise size={14} />
@@ -141,7 +147,7 @@ function Toolbar() {
                                         layoutId='browser-suggestions-container'
                                         key={'browser-suggestions-container'}
                                         initial={{opacity:0, maxHeight:0}} animate={{opacity:1, maxHeight: "64vh"}} exit={{opacity:0, maxHeight:0}}
-                                        className='absolute -top-1 -left-1 w-[calc(100%_+_0.5rem)] min-h-64 bg-(--background)/90 backdrop-blur-2xl backdrop-saturate-150 shadow-2xl rounded-2xl p-3 overflow-hidden'>
+                                        className='absolute -top-1 -left-1 w-[calc(100%_+_0.5rem)] min-h-64 bg-(--background)/90 backdrop-blur-2xl backdrop-saturate-150 shadow-2xl rounded-[20px] p-3 overflow-hidden'>
                                         <div className='bg-white w-full h-full'>
 
                                         </div>
@@ -176,27 +182,27 @@ function Toolbar() {
                                         radius="full"
                                         variant="light"
                                         size='sm'
-                                        onPress={() => setZoomValue((prev) => (Number(prev) <= 175 ? Number(prev) + 25 : 200))}
+                                        onPress={() => setZoomValue((prev) => (Number(prev) <= 350 ? Number(prev) + 50 : 400))}
                                     >
                                         <Plus size={14} />
                                     </Button>
                                 }
                                 size="sm"
-                                minValue={0}
-                                maxValue={200}
+                                minValue={-200}
+                                maxValue={400}
                                 step={25}
                                 marks={[
                                     {
-                                        value: 25,
-                                        label: "25%",
+                                        value: -200,
+                                        label: "-200%",
                                     },
                                     {
                                         value: 100,
                                         label: "100%",
                                     },
                                     {
-                                        value: 200,
-                                        label: "200%",
+                                        value: 400,
+                                        label: "400%",
                                     },
                                 ]}
                                 startContent={
@@ -205,7 +211,7 @@ function Toolbar() {
                                         radius="full"
                                         variant="light"
                                         size='sm'
-                                        onPress={() => setZoomValue((prev) => (Number(prev) >= 25 ? Number(prev) - 25 : 0))}
+                                        onPress={() => setZoomValue((prev) => (Number(prev) >= -150 ? Number(prev) - 50 : -200))}
                                     >
                                         <Minus size={14} />
                                     </Button>
