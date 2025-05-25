@@ -9,12 +9,14 @@
     ],
     "root_": {
         "title": "Youtube (Standalone)",
+        "description": "A lightweight youtube client and connect your activity with Discord Rich Presence! and more plugins from community!",
         "tools": {
             "main": {
                 "name": "Current Version {version}",
                 "actions": {
                     "home": "Home",
-                    "setup": "App Setup"
+                    "setup": "App Setup",
+                    "lock": "Lock"
                 }
             },
             "config": {
@@ -46,6 +48,7 @@
     },
     "setting": {
         "title": "Setting",
+        "clientver": "Client version",
         "nav": {
             "enhancement": "Enhancement",
             "accessibility": "Accessibility",
@@ -70,6 +73,36 @@
             },
             "sound": {
                 "title": "Sound"
+            },
+            "security": {
+                "title": "Security",
+                "description": "Security is protection from, or resilience against, potential harm (or other unwanted coercion).",
+                "sections": {
+                    "pin": {
+                        "title": "Security PIN",
+                        "description": "Security PIN is set to verify your identity and prevent unauthorized access.",
+                        "state": {
+                            "disabled": {
+                                "actions": {
+                                    "enable": "Setup PIN"
+                                }
+                            },
+                            "setup": {
+                                "actions": {
+                                    "cancel": "Cancel",
+                                    "continue": "Continue",
+                                    "confirm": "Confirm PIN",
+                                    "change": "Change PIN"
+                                }
+                            },
+                            "enabled": {
+                                "actions": {
+                                    "disable": "Disable PIN"
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "language": {
                 "title": "Language",

@@ -37,9 +37,9 @@ function Language() {
                   key={"setting-selector-lang-"+index}
                   classNames={{
                     base: cn(
-                      "inline-flex m-0 bg-content1 hover:bg-content2 items-center justify-between",
-                      "flex-row-reverse max-w-none cursor-pointer rounded-lg gap-4 p-4 border-2 border-transparent",
-                      "data-[selected=true]:border-danger",
+                      "inline-flex m-0 bg-(--root-title-background)/10 hover:bg-(--root-title-background)/30 items-center justify-between",
+                      "flex-row-reverse max-w-none cursor-pointer rounded-2xl gap-4 p-4 border-2 border-transparent",
+                      "data-[selected=true]:border-danger data-[selected=true]:bg-(--root-title-background)",
                     ),
                   }}
                   color="danger"

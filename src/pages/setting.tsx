@@ -1,10 +1,13 @@
 import { Button, Link, ScrollShadow } from "@heroui/react"
 import { Gear, Minus } from "@phosphor-icons/react"
 import { useApp } from "../contexts/appContext";
+import { useLanguage } from "../contexts/langContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Language from "./setting/language";
 import NotFound from "./setting/notFound";
-import { useLanguage } from "../contexts/langContext";
+import General from "./setting/general";
+import Debug from "./setting/debug";
+import Security from "./setting/security";
 
 function SettingNavBtn({ children, href }: { children: React.ReactNode, href?: string }) {
     const { showSetting, isSettingShowed } = useApp();
@@ -65,6 +68,7 @@ function SettingPage() {
                                     <SettingNavBtn href="/sound">{language.data.setting.pages.sound.title}</SettingNavBtn>
 
                                 <strong className="text-xs mt-2 opacity-40 px-2">{language.data.setting.nav.accessibility}</strong>
+                                    <SettingNavBtn href="/security">{language.data.setting.pages.security.title}</SettingNavBtn>
                                     <SettingNavBtn href="/language">{language.data.setting.pages.language.title}</SettingNavBtn>
                                     <SettingNavBtn href="/shortcut">{language.data.setting.pages.shortcut.title}</SettingNavBtn>
 
@@ -89,9 +93,15 @@ function SettingPage() {
                     }}>
                         <AnimatePresence>
                         {
+                            isSettingShowed === "/" ?
+                            <General /> :
+                            isSettingShowed === "/security" ?
+                            <Security /> :
                             isSettingShowed === "/language" ?
-                            <Language />
-                            : <NotFound />
+                            <Language /> :
+                            isSettingShowed === "/debug" ?
+                            <Debug /> :
+                            <NotFound />
                         }
                         </AnimatePresence>
                     </ScrollShadow>

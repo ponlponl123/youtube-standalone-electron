@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from '@heroui/react'
-import { CopySimpleIcon, Gear, GitPullRequest, HandWaving, House, List, Minus, Moon, Square, Sun, Warning, Wrench, X } from '@phosphor-icons/react'
+import { CopySimpleIcon, Gear, GitPullRequest, HandWaving, House, List, LockSimpleIcon, Minus, Moon, Square, Sun, Warning, Wrench, X } from '@phosphor-icons/react'
 import { useRoute } from '../contexts/routeContext'
 import { useTheme } from '../contexts/themeContext'
 import { useApp } from '../contexts/appContext'
@@ -10,7 +10,7 @@ function RootTitle() {
     const [ isMaximized, setMaximized ] = React.useState(false)
     const { setRoute } = useRoute();
     const { theme, setTheme } = useTheme();
-    const { version, showSetting } = useApp();
+    const { version, showSetting, setIsLocked } = useApp();
     const { language } = useLanguage();
 
     React.useEffect(() => {
@@ -35,6 +35,8 @@ function RootTitle() {
                                 key="home" onPress={() => setRoute('/')}>{language.data.root_.tools.main.actions.home}</DropdownItem>
                             <DropdownItem startContent={<Wrench weight='fill' size={16} />}
                                 key="setup" onPress={() => setRoute('/setup')}>{language.data.root_.tools.main.actions.setup}</DropdownItem>
+                            <DropdownItem startContent={<LockSimpleIcon weight='fill' size={16} />}
+                                key="lock" onPress={() => setIsLocked(true)}>{language.data.root_.tools.main.actions.lock}</DropdownItem>
                         </DropdownSection>
                         <DropdownSection title={language.data.root_.tools.config.name}>
                             <DropdownItem startContent={<Gear weight='fill' size={16} />}

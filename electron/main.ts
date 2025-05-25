@@ -112,6 +112,9 @@ app.whenReady().then(() => {
   ipcMain.on('reload', () => {
     win?.reload()
   })
+  ipcMain.on('hey-show-me-dev-tools', () => {
+    win?.webContents.toggleDevTools()
+  })
   ipcMain.on('fullscreen', (_, value: boolean) => {
     if (value)
       win?.setFullScreen(true)

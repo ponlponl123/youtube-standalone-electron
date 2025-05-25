@@ -9,12 +9,14 @@
     ],
     "root_": {
         "title": "Youtube (แบบสแตนด์อโลน)",
+        "description": "ไคลเอนต์ YouTube น้ำหนักเบาและเชื่อมต่อกิจกรรมของคุณกับ Discord Rich Presence! และปลั๊กอินอื่นๆ จากชุมชน!",
         "tools": {
             "main": {
                 "name": "เวอร์ชันปัจจุบัน {version}",
                 "actions": {
                     "home": "หน้าหลัก",
-                    "setup": "เซ็ตอัพแอพ"
+                    "setup": "เซ็ตอัพแอพ",
+                    "lock": "ล็อก"
                 }
             },
             "config": {
@@ -46,6 +48,7 @@
     },
     "setting": {
         "title": "การตั้งค่า",
+        "clientver": "เวอร์ชั่นของไคลเอนต์",
         "nav": {
             "enhancement": "การยกระดับ",
             "accessibility": "ตัวช่วยการเข้าถึง",
@@ -70,6 +73,36 @@
             },
             "sound": {
                 "title": "เสียง"
+            },
+            "security": {
+                "title": "ความปลอดภัย",
+                "description": "ความปลอดภัยคือการปกป้องหรือความยืดหยุ่นต่ออันตรายที่อาจเกิดขึ้น (หรือการบังคับที่ไม่พึงประสงค์อื่นๆ)",
+                "sections": {
+                    "pin": {
+                        "title": "รหัส PIN เพื่อความปลอดภัย",
+                        "description": "รหัส PIN ความปลอดภัย (Security PIN) กำหนดเพื่อยืนยันตัวตนและป้องกันการเข้าถึงที่ไม่ได้รับอนุญาต",
+                        "state": {
+                            "disabled": {
+                                "actions": {
+                                    "enable": "ตั้งค่า PIN"
+                                }
+                            },
+                            "setup": {
+                                "actions": {
+                                    "cancel": "ยกเลิก",
+                                    "continue": "ดำเนินการต่อ",
+                                    "confirm": "ยืนยัน PIN",
+                                    "change": "แก้ไข PIN"
+                                }
+                            },
+                            "enabled": {
+                                "actions": {
+                                    "disable": "เลิกใช้งาน PIN"
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "language": {
                 "title": "ภาษา",
