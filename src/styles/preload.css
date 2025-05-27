@@ -1,0 +1,96 @@
+main.preload {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+        0deg,
+        var(--background),
+        var(--root-title-background)
+    );
+
+    img {
+        z-index: 20;
+        height: 72px;
+        width: 72px;
+    }
+
+    .crop {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+    }
+
+    .backdrop {
+        position: absolute;
+        z-index: 10;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: end;
+        overflow: hidden;
+        transform: scale(1.2);
+        animation: opacity-fade-in 1s linear both;
+
+        .glow {
+            --max-opacity: 0.64;
+            --min-opacity: 0.32;
+            --max-padding: 6vw;
+            --min-padding: 2vw;
+            position: absolute;
+            background-color: red;
+            padding: 2vw;
+            filter: blur(128px);
+            opacity: 0;
+            animation: glow-animation 4s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86) alternate both;
+        }
+        .glow:nth-child(1) {
+            left: 0vw;
+        }
+        .glow:nth-child(2) {
+            --max-opacity: 0.32;
+            --min-opacity: 0.12;
+            left: 12vw;
+            width: 64%;
+            animation-delay: 1s;
+            animation-duration: 5s;
+        }
+        .glow:nth-child(3) {
+            right: 6vw;
+            --max-opacity: 0.24;
+            --min-opacity: 0.12;
+            --max-padding: 12vw;
+            animation-delay: 2s;
+            animation-duration: 3s;
+        }
+    }
+}
+
+@keyframes opacity-fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes glow-animation {
+    0% {
+        filter: blur(164px);
+        padding: var(--max-padding);
+        opacity: var(--max-opacity);
+    }
+    100% {
+        filter: blur(128px);
+        padding: var(--min-padding);
+        opacity: var(--min-opacity);
+    }
+}

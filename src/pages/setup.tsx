@@ -1,7 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/langContext';
 
 function Setup() {
+    const { language } = useLanguage();
     const seed = Math.floor(Math.random() * 1000);
     const [randomSeed] = React.useState(seed);
     return (
@@ -81,8 +83,23 @@ function Setup() {
                     })()}
                 </style>
                 <div className='flex flex-col items-center justify-center gap-2 absolute top-[2.4rem] left-0 h-[calc(100%_-_2.4rem)] w-full bg-gradient-to-b to-transparent from-(--root-title-background) backdrop-blur-lg backdrop-saturate-150 p-2'>
-                    <h2 className='opacity-60'>👋 Hello there!</h2>
-                    <h1 className='text-2xl font-medium flex items-center gap-2'>Let's Setup your experience!</h1>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.92 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.92 }}
+                        transition={{ duration: 1 }}
+                        className='flex flex-col items-center justify-center gap-2'>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 0.6, y: 0 }}
+                            transition={{ delay: 0.32 }}
+                            className='opacity-60'>{language.data.setup.welcome.hello}</motion.h2>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1 }}
+                            className='text-2xl font-medium flex items-center gap-2'>{language.data.setup.welcome.title}</motion.h1>
+                    </motion.div>
                 </div>
             </>
         </motion.div>

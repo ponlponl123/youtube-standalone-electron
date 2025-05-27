@@ -3,6 +3,8 @@
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 
+@import "./styles/table.css";
+
 .heroui-ripple {
     @apply blur-md;
 }

@@ -1,33 +1,5 @@
 import React from "react";
-
-export type Tab = {
-    id: string;
-    name: string;
-    url: string;
-    icon: string;
-    createdAt: number;
-    updatedAt: number;
-    lastActive: number;
-    isActive: boolean;
-    isPinned: boolean;
-    zoom: number;
-    audible: boolean;
-    muted: boolean;
-    webview?: React.RefObject<Electron.WebviewTag> | undefined;
-}
-
-export interface TabsContextType {
-    tabs: Tab[];
-    addTab: (url: string) => void;
-    removeTab: (id: string) => void;
-    setActiveTab: (id: string) => void;
-    getTab: (id: string) => Tab | undefined;
-    getActiveTab: () => Tab | undefined;
-    editTab: (id: string, data: Tab) => void;
-    setTabZoom: (id: string, zoom: number) => void;
-    setTabs: (tabs: Tab[]) => void;
-    setTabWebview: (id: string, webview: React.RefObject<Electron.WebviewTag>) => void;
-}
+import { EditTabOption, Tab, TabsContextType } from "../types/tab";
 
 export const defaultTab: Tab = {
     id: Date.now().toString(),
@@ -42,6 +14,7 @@ export const defaultTab: Tab = {
     zoom: 0,
     audible: false,
     muted: false,
+    ready: false,
     webview: undefined,
 }
 
@@ -64,10 +37,10 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (tabs.length === 0) window.ipcRenderer.send('close');
     }, [tabs]);
     const addTab = (url: string) => {
-        const newTab: Tab = {
+        setTabs((prevTabs) => [...prevTabs, {
             id: Date.now().toString(),
-            name: url,
-            url: url,
+            name: "Youtube",
+            url,
             icon: "/favicon_32x32.png",
             createdAt: Date.now(),
             updatedAt: Date.now(),
@@ -77,9 +50,9 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
             zoom: 0,
             audible: false,
             muted: false,
+            ready: false,
             webview: undefined,
-        };
-        setTabs((prevTabs) => [...prevTabs, newTab]);
+        }]);
     }
     const removeTab = (id: string) => {
         const tabToRemove = tabs.find((tab) => tab.id === id);
@@ -110,7 +83,7 @@ export const TabsProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const getActiveTab = () => {
         return tabs.find((tab) => tab.isActive);
     }
-    const editTab = (id: string, data: Tab) => {
+    const editTab = (id: string, data: EditTabOption) => {
         setTabs((prevTabs) => {
             return prevTabs.map((tab) => {
                 if (tab.id === id) {

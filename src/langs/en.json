@@ -1,0 +1,165 @@
+{
+    "name": "English",
+    "locate": "English",
+    "country": "United States",
+    "ytkey": "en.us",
+    "flag": "us",
+    "translators": [
+        "ponlponl123"
+    ],
+    "root_": {
+        "title": "Youtube (Standalone)",
+        "description": "A lightweight youtube client and connect your activity with Discord Rich Presence! and more plugins from community!",
+        "tools": {
+            "main": {
+                "name": "Current Version {version}",
+                "actions": {
+                    "home": "Home",
+                    "setup": "App Setup",
+                    "lock": "Lock"
+                }
+            },
+            "config": {
+                "name": "Configuration",
+                "actions": {
+                    "setting": "Setting",
+                    "theme": {
+                        "title": "{mode} Mode",
+                        "light": "Light",
+                        "dark": "Dark",
+                        "system": "System"
+                    }
+                }
+            },
+            "help": {
+                "name": "Help & Supports",
+                "actions": {
+                    "issue": "Report Issue",
+                    "pr": "Make Pull Request"
+                }
+            },
+            "danger": {
+                "name": "Danger zone",
+                "actions": {
+                    "terminate": "Exit"
+                }
+            }
+        }
+    },
+    "setting": {
+        "title": "Setting",
+        "clientver": "Client version",
+        "nav": {
+            "enhancement": "Enhancement",
+            "accessibility": "Accessibility",
+            "dev_zone": "Developer Zone"
+        },
+        "pages": {
+            "notFound": {
+                "title": "Hey!",
+                "description": "There is nothing here."
+            },
+            "general": {
+                "title": "General"
+            },
+            "appearance": {
+                "title": "Appearance"
+            },
+            "update": {
+                "title": "Update"
+            },
+            "video": {
+                "title": "Video"
+            },
+            "sound": {
+                "title": "Sound"
+            },
+            "security": {
+                "title": "Security",
+                "description": "Security is protection from, or resilience against, potential harm (or other unwanted coercion).",
+                "sections": {
+                    "pin": {
+                        "title": "Security PIN",
+                        "description": "Security PIN is set to verify your identity and prevent unauthorized access.",
+                        "state": {
+                            "disabled": {
+                                "actions": {
+                                    "enable": "Setup PIN"
+                                }
+                            },
+                            "setup": {
+                                "actions": {
+                                    "cancel": "Cancel",
+                                    "continue": "Continue",
+                                    "confirm": "Confirm PIN",
+                                    "change": "Change PIN"
+                                }
+                            },
+                            "enabled": {
+                                "actions": {
+                                    "disable": "Disable PIN"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "language": {
+                "title": "Language",
+                "description": "Language is a structured communication system consisting of grammar and vocabulary, and is the way humans communicate with each other."
+            },
+            "shortcut": {
+                "title": "Shortcut"
+            },
+            "debug": {
+                "title": "Debug"
+            },
+            "feedback": {
+                "title": "Feedback"
+            }
+        }
+    },
+    "sidebar": {
+        "actions": {
+            "new_tab": "New Tab",
+            "pin_pane": "Pin pane",
+            "unpin_pane": "Unpin pane"
+        }
+    },
+    "setup": {
+        "welcome": {
+            "hello": "👋 Hello there!",
+            "title": "Let's Setup your experience!"
+        }
+    },
+    "notFound": {
+        "title": "You're at {pathname}",
+        "description": "Seem like that location is not correct actually.",
+        "actions": {
+            "back": "Back to Youtube"
+        }
+    },
+    "offline": {
+        "title": "You're now offline.",
+        "description": "Currently your Youtube Standalone {version} Offline mode are not supported.",
+        "actions": {
+            "back": "Check for Updates"
+        },
+        "note": {
+            "normal": "If you are developer, and you need to help me make this thing. Feel free to {link}!",
+            "link": "make your PR on github"
+        }
+    },
+    "app": {
+        "tools": {
+            "equalizer": {
+                "title": "This feature currently unavailable",
+                "description": "If you have a idea to make this Equalizer works, Feel free to make your PR!",
+                "actions": {
+                    "pr": "Make Pull Request",
+                    "fork": "Fork Repository"
+                }
+            }
+        }
+    }
+}

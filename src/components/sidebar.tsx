@@ -3,14 +3,16 @@ import { useTabs } from '../contexts/tabsContext'
 import { Button, ScrollShadow } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, PushPin, PushPinSlash, SpeakerSimpleHigh, SpeakerSimpleX, X } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/langContext';
 
 function Sidebar() {
+    const { language } = useLanguage();
     const [ lock, setLock ] = React.useState(false);
     const { tabs, addTab, editTab, removeTab, setActiveTab } = useTabs();
     return (
         <div
             data-pinned={lock}
-            className='sidebar-container w-8 group/container rounded-lg ml-2 mb-2 py-1 transition-all duration-300 flex flex-col gap-1'>
+            className='sidebar-container w-8 group/container rounded-lg ml-2 mb-2 py-1 transition-all duration-300 flex flex-col gap-1 z-50'>
             <ScrollShadow className='sidebar-tabs overflow-y-auto min-h-0 flex-1 w-full' style={{
                 scrollbarColor: 'var(--scrollbar-color) transparent',
             }}>
@@ -21,42 +23,42 @@ function Sidebar() {
                                 return (
                                 <div className='tab-item-container-wrapper flex-1 flex max-h-8 overflow-hidden' key={'tab-item-'+index}>
                                     <motion.div layoutId={tab.id} initial={{ opacity: 0, marginTop: -32 }} animate={{ opacity: 1, marginTop: 0 }} exit={{ opacity: 0, marginTop: -32 }} className='tab-item-container flex-1 flex max-h-8'>
-                                        <Button className={'tab-item max-h-8 '+(tab.isActive?' active':'')} onPress={() => {
-                                            setActiveTab(tab.id);
-                                        }}>
-                                            <div className='tab-icon relative'>
+                                        <div className='tab-item-wrapper active:scale-[0.98] active:duration-50 transition-all duration-300 flex-1 flex items-center max-h-8 relative'>
+                                            <div className='tab-icon absolute left-2 z-10'>
                                                 {
                                                     tab.audible ?
                                                     <motion.div
                                                         initial={{ opacity:0 }}
                                                         animate={{ opacity:1 }}
                                                         exit={{ opacity:0 }}
-                                                        className='tab-badge absolute top-0 left-0 w-full h-full z-10 flex justify-center items-center'
+                                                        className='tab-badge absolute top-0 left-2 w-full h-full z-10 flex justify-center items-center'
                                                         layoutId={'playing-'+tab.id}>
                                                         <Button
                                                             isIconOnly
                                                             size='sm'
                                                             onPress={()=>{
-                                                                editTab(tab.id, {
-                                                                    ...tab,
-                                                                    muted: !tab.muted
-                                                                })
+                                                                editTab(tab.id, {muted: !tab.muted})
                                                             }}
                                                             variant='light'
                                                             className='min-h-0 min-w-0 w-6 h-6 absolute flex justify-center items-center'
                                                         >{ tab.muted ?
-                                                            <SpeakerSimpleHigh size={12} className='w-max' /> :
-                                                            <SpeakerSimpleX size={12} className='w-max' />
+                                                            <SpeakerSimpleX size={16} className='w-max' /> :
+                                                            <SpeakerSimpleHigh size={16} className='w-max' />
                                                         }</Button>
                                                     </motion.div>
-                                                    : <img src={tab.icon} alt={tab.name} />
+                                                    : <img src={tab.icon} alt={tab.name} className='h-4 pointer-events-none' />
                                                 }
                                             </div>
-                                            <ScrollShadow className='tab-title w-[calc(100%_-_4rem)] text-start overflow-hidden' orientation='horizontal'>
-                                                <span className=''>{tab.name}</span>
-                                            </ScrollShadow>
-                                            <Button variant='light' size='sm' radius='lg' isIconOnly onPress={() => removeTab(tab.id)} className='remove-tab-button'><X weight='bold' size={12} /></Button>
-                                        </Button>
+                                            <Button className={'tab-item min-w-8 max-h-8 !scale-100 '+(tab.isActive?' active':'')} onPress={() => {
+                                                setActiveTab(tab.id);
+                                            }}>
+                                                <ScrollShadow className='tab-title w-[calc(100%_-_4rem)] text-start overflow-hidden' orientation='horizontal'>
+                                                    <span className=''>{tab.name}</span>
+                                                </ScrollShadow>
+                                            </Button>
+                                            <Button variant='light' size='sm' radius='lg' isIconOnly onPress={() => removeTab(tab.id)}
+                                                className='remove-tab-button absolute right-1 h-6 w-6 min-w-0 p-1 hidden group-hover/container:flex'><X weight='bold' size={12} /></Button>
+                                        </div>
                                     </motion.div>
                                 </div>
                                 )
@@ -69,7 +71,7 @@ function Sidebar() {
                         className={'tab-item active !bg-transparent'}
                     >
                         <div className='tab-icon relative'><Plus className='min-w-4' size={32} /></div>
-                        <span className='tab-title'>New tab</span>
+                        <span className='tab-title'>{language.data.sidebar.actions.new_tab}</span>
                     </Button>
                 </div>
             </ScrollShadow>
@@ -82,10 +84,10 @@ function Sidebar() {
                 {
                     lock ? <>
                         <div className='tab-icon relative'><PushPinSlash className='min-w-4' size={32} /></div>
-                        <span className='tab-title'>Unpin pane</span>
+                        <span className='tab-title'>{language.data.sidebar.actions.unpin_pane}</span>
                     </> : <>
                         <div className='tab-icon relative'><PushPin className='min-w-4' size={32} /></div>
-                        <span className='tab-title'>Pin pane</span>
+                        <span className='tab-title'>{language.data.sidebar.actions.pin_pane}</span>
                     </>
                 }
                 </Button>

@@ -1,0 +1,165 @@
+{
+    "name": "Thai",
+    "locate": "ภาษาไทย",
+    "country": "Thailand",
+    "ytkey": "th.3",
+    "flag": "th",
+    "translators": [
+        "ponlponl123"
+    ],
+    "root_": {
+        "title": "Youtube (แบบสแตนด์อโลน)",
+        "description": "ไคลเอนต์ YouTube น้ำหนักเบาและเชื่อมต่อกิจกรรมของคุณกับ Discord Rich Presence! และปลั๊กอินอื่นๆ จากชุมชน!",
+        "tools": {
+            "main": {
+                "name": "เวอร์ชันปัจจุบัน {version}",
+                "actions": {
+                    "home": "หน้าหลัก",
+                    "setup": "เซ็ตอัพแอพ",
+                    "lock": "ล็อก"
+                }
+            },
+            "config": {
+                "name": "การกำหนดค่า",
+                "actions": {
+                    "setting": "การตั้งค่า",
+                    "theme": {
+                        "title": "โหมด {mode}",
+                        "light": "สว่าง",
+                        "dark": "มืด",
+                        "system": "ขึ้นอยู่กับระบบ"
+                    }
+                }
+            },
+            "help": {
+                "name": "ความช่วยเหลือและการสนับสนุน",
+                "actions": {
+                    "issue": "รายงานปัญหา",
+                    "pr": "สร้างคำขอ PR"
+                }
+            },
+            "danger": {
+                "name": "เขตอันตราย",
+                "actions": {
+                    "terminate": "ปิดแอพ"
+                }
+            }
+        }
+    },
+    "setting": {
+        "title": "การตั้งค่า",
+        "clientver": "เวอร์ชั่นของไคลเอนต์",
+        "nav": {
+            "enhancement": "การยกระดับ",
+            "accessibility": "ตัวช่วยการเข้าถึง",
+            "dev_zone": "โซนนักพัฒนา"
+        },
+        "pages": {
+            "notFound": {
+                "title": "เฮ้!",
+                "description": "ที่นี่ไม่มีอะไรเลย"
+            },
+            "general": {
+                "title": "ทั่วไป"
+            },
+            "appearance": {
+                "title": "รูปร่าง"
+            },
+            "update": {
+                "title": "อัปเดต"
+            },
+            "video": {
+                "title": "วีดีโอ"
+            },
+            "sound": {
+                "title": "เสียง"
+            },
+            "security": {
+                "title": "ความปลอดภัย",
+                "description": "ความปลอดภัยคือการปกป้องหรือความยืดหยุ่นต่ออันตรายที่อาจเกิดขึ้น (หรือการบังคับที่ไม่พึงประสงค์อื่นๆ)",
+                "sections": {
+                    "pin": {
+                        "title": "รหัส PIN เพื่อความปลอดภัย",
+                        "description": "รหัส PIN ความปลอดภัย (Security PIN) กำหนดเพื่อยืนยันตัวตนและป้องกันการเข้าถึงที่ไม่ได้รับอนุญาต",
+                        "state": {
+                            "disabled": {
+                                "actions": {
+                                    "enable": "ตั้งค่า PIN"
+                                }
+                            },
+                            "setup": {
+                                "actions": {
+                                    "cancel": "ยกเลิก",
+                                    "continue": "ดำเนินการต่อ",
+                                    "confirm": "ยืนยัน PIN",
+                                    "change": "แก้ไข PIN"
+                                }
+                            },
+                            "enabled": {
+                                "actions": {
+                                    "disable": "เลิกใช้งาน PIN"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "language": {
+                "title": "ภาษา",
+                "description": "ภาษาเป็นระบบการสื่อสารที่มีโครงสร้างประกอบด้วยไวยากรณ์และคำศัพท์ และเป็นวิธีที่มนุษย์ใช้เพื่อสื่อสารกัน"
+            },
+            "shortcut": {
+                "title": "ทางลัด"
+            },
+            "debug": {
+                "title": "ดีบัก"
+            },
+            "feedback": {
+                "title": "ข้อเสนอแนะ"
+            }
+        }
+    },
+    "sidebar": {
+        "actions": {
+            "new_tab": "แท็บใหม่",
+            "pin_pane": "หมุดแผง",
+            "unpin_pane": "ปลดหมุดแผง"
+        }
+    },
+    "setup": {
+        "welcome": {
+            "hello": "👋 สวัสดีจ้า!",
+            "title": "มาตั้งค่าประสบการณ์ของเธอกันเถอะ!"
+        }
+    },
+    "notFound": {
+        "title": "คุณอยู่ที่ {pathname}",
+        "description": "ดูเหมือนว่าตำแหน่งนั้นจะไม่ถูกต้องจริงๆ",
+        "actions": {
+            "back": "กลับไปยัง Youtube"
+        }
+    },
+    "offline": {
+        "title": "ตอนนี้คุณออฟไลน์แล้ว",
+        "description": "ขณะนี้โหมดออฟไลน์ YouTube Standalone {version} ของคุณไม่ได้รับการสนับสนุน",
+        "actions": {
+            "back": "ตรวจสอบการอัปเดต"
+        },
+        "note": {
+            "normal": "เฮ่!, หากนายเป็นนักพัฒนาและต้องการช่วยฉันสร้างสิ่งนี้ โปรดอย่าลังเลที่จะ {link}!",
+            "link": "สร้าง PR ของนายบน github"
+        }
+    },
+    "app": {
+        "tools": {
+            "equalizer": {
+                "title": "คุณสมบัตินี้ไม่สามารถใช้งานได้ในขณะนี้",
+                "description": "คือว่า.. หากนายมีความคิดที่จะทำให้ Equalizer นี้ใช้งานได้ โปรดอย่าลังเลที่จะสร้าง PR ล่ะ!",
+                "actions": {
+                    "pr": "สร้างคำขอ PR",
+                    "fork": "ฟอร์กคลังเก็บ"
+                }
+            }
+        }
+    }
+}

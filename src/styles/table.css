@@ -1,0 +1,35 @@
+table {
+    padding: 6px;
+    border-radius: 24px;
+    border-spacing: 4px;
+    border-collapse: unset;
+    background-color: rgb(255,255,255,0.48);
+}
+
+table,
+table th,
+table td {
+    border: 1px solid transparent;
+}
+
+table th,
+table td {
+    @apply text-xs;
+    padding: 12px;
+    border-radius: 18px;
+    background-color: rgb(0,0,0, 0.06);
+}
+
+table th {
+    @apply bg-danger text-white dark:bg-danger/10;
+}
+
+html.dark {
+    table {
+        background-color: rgb(0,0,0, 0.12);
+    }
+    
+    table td {
+        background-color: rgb(0,0,0, 0.32);
+    }
+}
